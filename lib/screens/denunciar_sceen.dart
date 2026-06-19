@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,6 +87,7 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
       initialDate: ahora,
       firstDate: DateTime(2000),
       lastDate: ahora,
+      locale: const Locale('es', 'ES'),
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: const ColorScheme.light(
@@ -99,7 +101,7 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
     );
     if (picked != null) {
       setState(() {
-        fecha = DateFormat('dd/MM/yyyy').format(picked);
+        fecha = DateFormat('dd/MM/yyyy', 'es_ES').format(picked);
       });
     }
   }

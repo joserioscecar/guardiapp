@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'screens/home_screen.dart';
+import '../theme/colores.dart';
 
 void main() {
   runApp(const GuardiApp());
@@ -14,8 +16,19 @@ class GuardiApp extends StatelessWidget {
     return MaterialApp(
       title: 'GuardiApp',
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'ES'),
+        Locale('es'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('es', 'ES'),
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF212BC0)),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.azulPersa),
         useMaterial3: true,
         // Configuración global de fuentes
         textTheme: GoogleFonts.interTextTheme(
