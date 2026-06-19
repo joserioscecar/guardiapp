@@ -75,9 +75,64 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
   String personas        = '';
   String institucion     = '';
   
+  // ── Campos tocados ──
+  final Map<String, bool> touched = {
+    'descripcion': false,
+    'lugar': false,
+    'fecha': false,
+    'tipoDenunciante': false,
+    'genero': false,
+    'edad': false,
+    'discriminacion': false,
+    'acoso': false,
+    'violencia': false,
+    'grupo': false,
+    'entorno': false,
+    'subEntorno': false,
+    'personas': false,
+    'institucion': false,
+  };
+  
   // ── Imágenes seleccionadas ──
   List<XFile> imagenes = [];
   final ImagePicker _picker = ImagePicker();
+
+  // ── Función para validar el formulario ──
+  String? _validarFormulario() {
+    if (descripcion.isEmpty) return 'La descripción es requerida';
+    if (lugar.isEmpty) return 'El lugar es requerido';
+    if (fecha.isEmpty) return 'La fecha es requerida';
+    if (tipoDenunciante.isEmpty) return 'Debes indicar si eres víctima o testigo';
+    if (genero.isEmpty) return 'El género es requerido';
+    if (edad.isEmpty) return 'La edad es requerida';
+    if (discriminacion.isEmpty) return 'El tipo de discriminación es requerido';
+    if (acoso.isEmpty) return 'El tipo de acoso es requerido';
+    if (violencia.isEmpty) return 'El tipo de violencia es requerido';
+    if (grupo.isEmpty) return 'El grupo poblacional es requerido';
+    if (entorno.isEmpty) return 'El tipo de entorno es requerido';
+    if (subEntorno.isEmpty) return 'Debes especificar el lugar del entorno';
+    if (personas.isEmpty) return 'Las personas involucradas son requeridas';
+    if (institucion.isEmpty) return 'Debes seleccionar una institución';
+    return null;
+  }
+
+  // ── Función para verificar si el formulario es válido ──
+  bool _esFormularioValido() {
+    return descripcion.isNotEmpty &&
+        lugar.isNotEmpty &&
+        fecha.isNotEmpty &&
+        tipoDenunciante.isNotEmpty &&
+        genero.isNotEmpty &&
+        edad.isNotEmpty &&
+        discriminacion.isNotEmpty &&
+        acoso.isNotEmpty &&
+        violencia.isNotEmpty &&
+        grupo.isNotEmpty &&
+        entorno.isNotEmpty &&
+        subEntorno.isNotEmpty &&
+        personas.isNotEmpty &&
+        institucion.isNotEmpty;
+  }
 
   // ── Abre el DatePicker nativo de Material 3 ──
   Future<void> _seleccionarFecha() async {
@@ -147,64 +202,93 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: descripcion,
               placeholder: 'Descripción',
               maxLines: 4,
-              onValorChange: (v) => setState(() => descripcion = v),
+              isInvalid: descripcion.isEmpty && touched['descripcion']!,
+              onValorChange: (v) => setState(() {
+                descripcion = v;
+                if (v.isNotEmpty) touched['descripcion'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
             // ── Víctima / Testigo ──
             Label('¿Eres víctima o testigo?'),
-            Row(
-              children: ['Víctima', 'Testigo'].map((op) {
-                final sel = tipoDenunciante == op;
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () => setState(() => tipoDenunciante = op),
-                    child: Container(
-                      margin: EdgeInsets.only(right: op == 'Víctima' ? 6 : 0, left: op == 'Testigo' ? 6 : 0),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        color: sel ? AppColors.azulPersa : AppColors.fondoCampo,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        op,
-                        style: GoogleFonts.inter(
-                          color: sel ? Colors.white : AppColors.textoGris,
-                          fontWeight: FontWeight.w500,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: tipoDenunciante.isEmpty && touched['tipoDenunciante']! ? Colors.red : Colors.transparent,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: ['Víctima', 'Testigo'].map((op) {
+                  final sel = tipoDenunciante == op;
+                  return Expanded(
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        tipoDenunciante = op;
+                        touched['tipoDenunciante'] = true;
+                      }),
+                      child: Container(
+                        margin: EdgeInsets.only(right: op == 'Víctima' ? 6 : 0, left: op == 'Testigo' ? 6 : 0),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: sel ? AppColors.azulPersa : AppColors.fondoCampo,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          op,
+                          style: GoogleFonts.inter(
+                            color: sel ? Colors.white : AppColors.textoGris,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(height: 20),
 
             // ── Género ──
             Label('Género'),
-            Wrap(
-              spacing: 8,
-              children: ['Mujer', 'Hombre', 'Otro'].map((g) {
-                final sel = genero == g;
-                return GestureDetector(
-                  onTap: () => setState(() => genero = g),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: sel ? AppColors.azulPersa : AppColors.fondoCampo,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      g,
-                      style: GoogleFonts.inter(
-                        color: sel ? Colors.white : AppColors.textoGris,
-                        fontSize: 14,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: genero.isEmpty && touched['genero']! ? Colors.red : Colors.transparent,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.all(4),
+              child: Wrap(
+                spacing: 8,
+                children: ['Mujer', 'Hombre', 'Otro'].map((g) {
+                  final sel = genero == g;
+                  return GestureDetector(
+                    onTap: () => setState(() {
+                      genero = g;
+                      touched['genero'] = true;
+                    }),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: sel ? AppColors.azulPersa : AppColors.fondoCampo,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        g,
+                        style: GoogleFonts.inter(
+                          color: sel ? Colors.white : AppColors.textoGris,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -215,7 +299,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               placeholder: 'Ej: 25',
               keyboardType: TextInputType.number,
               maxLength: 3,
-              onValorChange: (v) => setState(() => edad = v),
+              isInvalid: edad.isEmpty && touched['edad']!,
+              onValorChange: (v) => setState(() {
+                edad = v;
+                if (v.isNotEmpty) touched['edad'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -225,7 +313,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: lugar,
               placeholder: 'Selecciona el lugar',
               opciones: _lugares,
-              onSeleccionar: (v) => setState(() => lugar = v),
+              isInvalid: lugar.isEmpty && touched['lugar']!,
+              onSeleccionar: (v) => setState(() {
+                lugar = v;
+                touched['lugar'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -234,7 +326,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
             FilaIcono(
               valor: fecha,
               placeholder: 'Selecciona la fecha',
-              onTap: _seleccionarFecha,
+              isInvalid: fecha.isEmpty && touched['fecha']!,
+              onTap: () {
+                setState(() => touched['fecha'] = true);
+                _seleccionarFecha();
+              },
               icono: const Icon(Icons.calendar_month, color: AppColors.textoGris),
             ),
             const SizedBox(height: 20),
@@ -245,7 +341,12 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: discriminacion,
               placeholder: 'Selecciona el tipo',
               opciones: _tiposDiscriminacion,
-              onSeleccionar: (v) => setState(() { discriminacion = v; subDisc = ''; }),
+              isInvalid: discriminacion.isEmpty && touched['discriminacion']!,
+              onSeleccionar: (v) => setState(() {
+                discriminacion = v;
+                subDisc = '';
+                touched['discriminacion'] = true;
+              }),
             ),
             if (discriminacion.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -253,7 +354,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
                 valor: subDisc,
                 placeholder: 'Selecciona el subtipo',
                 opciones: _subtipos[discriminacion] ?? [],
-                onSeleccionar: (v) => setState(() => subDisc = v),
+                isInvalid: subDisc.isEmpty && touched['subDisc']!,
+                onSeleccionar: (v) => setState(() {
+                  subDisc = v;
+                  touched['subDisc'] = true;
+                }),
               ),
             ],
             const SizedBox(height: 20),
@@ -264,7 +369,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: acoso,
               placeholder: 'Selecciona el tipo de acoso',
               opciones: _tiposAcoso,
-              onSeleccionar: (v) => setState(() => acoso = v),
+              isInvalid: acoso.isEmpty && touched['acoso']!,
+              onSeleccionar: (v) => setState(() {
+                acoso = v;
+                touched['acoso'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -274,7 +383,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: violencia,
               placeholder: 'Selecciona el tipo de violencia',
               opciones: _tiposViolencia,
-              onSeleccionar: (v) => setState(() => violencia = v),
+              isInvalid: violencia.isEmpty && touched['violencia']!,
+              onSeleccionar: (v) => setState(() {
+                violencia = v;
+                touched['violencia'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -284,7 +397,11 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: grupo,
               placeholder: 'Selecciona el grupo',
               opciones: _gruposPob,
-              onSeleccionar: (v) => setState(() => grupo = v),
+              isInvalid: grupo.isEmpty && touched['grupo']!,
+              onSeleccionar: (v) => setState(() {
+                grupo = v;
+                touched['grupo'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
@@ -294,7 +411,12 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               valor: entorno,
               placeholder: 'Selecciona el entorno',
               opciones: _entornos.keys.toList(),
-              onSeleccionar: (v) => setState(() { entorno = v; subEntorno = ''; }),
+              isInvalid: entorno.isEmpty && touched['entorno']!,
+              onSeleccionar: (v) => setState(() {
+                entorno = v;
+                subEntorno = '';
+                touched['entorno'] = true;
+              }),
             ),
             if (entorno.isNotEmpty) ...[
               const SizedBox(height: 12),
@@ -302,57 +424,76 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
                 valor: subEntorno,
                 placeholder: 'Especifica el lugar',
                 opciones: _entornos[entorno] ?? [],
-                onSeleccionar: (v) => setState(() => subEntorno = v),
+                isInvalid: subEntorno.isEmpty && touched['subEntorno']!,
+                onSeleccionar: (v) => setState(() {
+                  subEntorno = v;
+                  touched['subEntorno'] = true;
+                }),
               ),
             ],
             const SizedBox(height: 20),
 
             // ── Personas involucradas ──
             Label('Personas involucradas'),
-            DropdownGris(
+            CampoTexto(
               valor: personas,
               placeholder: 'Escribe los nombres...',
-              opciones: [],
-              onSeleccionar: (v) => setState(() => personas = v),
+              isInvalid: personas.isEmpty && touched['personas']!,
+              onValorChange: (v) => setState(() {
+                personas = v;
+                if (v.isNotEmpty) touched['personas'] = true;
+              }),
             ),
             const SizedBox(height: 20),
 
             // ── Institución ──
             Label('¿Deseas redireccionar tu denuncia?'),
             
-            Column(
-              children: _instituciones.map((inst) {
-                final sel = institucion == inst;
-                return GestureDetector(
-                  onTap: () => setState(() => institucion = inst),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: sel ? AppColors.azulPersa.withOpacity(0.08) : AppColors.fondoCampo,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          inst,
-                          style: GoogleFonts.inter(
-                            color: sel ? AppColors.azulPersa : AppColors.textoOscuro,
-                            fontWeight: sel ? FontWeight.w600 : FontWeight.normal,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: institucion.isEmpty && touched['institucion']! ? Colors.red : Colors.transparent,
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: _instituciones.map((inst) {
+                  final sel = institucion == inst;
+                  return GestureDetector(
+                    onTap: () => setState(() {
+                      institucion = inst;
+                      touched['institucion'] = true;
+                    }),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: sel ? AppColors.azulPersa.withOpacity(0.08) : AppColors.fondoCampo,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            inst,
+                            style: GoogleFonts.inter(
+                              color: sel ? AppColors.azulPersa : AppColors.textoOscuro,
+                              fontWeight: sel ? FontWeight.w600 : FontWeight.normal,
+                            ),
                           ),
-                        ),
-                        Radio<String>(
-                          value: inst,
-                          groupValue: institucion,
-                          activeColor: AppColors.azulPersa,
-                          onChanged: (v) => setState(() => institucion = v ?? ''),
-                        ),
-                      ],
+                          Radio<String>(
+                            value: inst,
+                            groupValue: institucion,
+                            activeColor: AppColors.azulPersa,
+                            onChanged: (v) => setState(() => institucion = v ?? ''),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -431,7 +572,7 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: _esFormularioValido() ? () {
                   // Captura de todos los valores del formulario
                   final datosDenuncia = {
                     'descripcion': descripcion,
@@ -477,9 +618,10 @@ class _DenunciarScreenState extends State<DenunciarScreen> {
                       );
                     }
                   });
-                },
+                } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.azulPersa,
+                  disabledBackgroundColor: Colors.grey[400],
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),

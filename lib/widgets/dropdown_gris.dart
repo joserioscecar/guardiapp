@@ -9,12 +9,14 @@ class DropdownGris extends StatelessWidget {
     required this.placeholder,
     required this.opciones,
     required this.onSeleccionar,
+    this.isInvalid = false,
   });
 
   final String valor;
   final String placeholder;
   final List<String> opciones;
   final ValueChanged<String> onSeleccionar;
+  final bool isInvalid;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +24,10 @@ class DropdownGris extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.fondoCampo,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isInvalid ? Colors.red : Colors.transparent,
+          width: 2,
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: ButtonTheme(

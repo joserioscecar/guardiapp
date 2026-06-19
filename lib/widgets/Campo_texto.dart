@@ -11,6 +11,7 @@ class CampoTexto extends StatelessWidget {
     this.maxLines = 1,
     this.maxLength,
     this.keyboardType,
+    this.isInvalid = false,
   });
 
   final String valor;
@@ -19,6 +20,7 @@ class CampoTexto extends StatelessWidget {
   final int maxLines;
   final int? maxLength;
   final TextInputType? keyboardType;
+  final bool isInvalid;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,24 @@ class CampoTexto extends StatelessWidget {
         counterText: '',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: isInvalid ? Colors.red : Colors.transparent,
+            width: 2,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: isInvalid ? Colors.red : Colors.transparent,
+            width: 2,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: isInvalid ? Colors.red : AppColors.azulPersa,
+            width: 2,
+          ),
         ),
       ),
     );

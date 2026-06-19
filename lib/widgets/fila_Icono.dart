@@ -8,12 +8,14 @@ class FilaIcono extends StatelessWidget {
     required this.placeholder,
     required this.onTap,
     required this.icono,
+    this.isInvalid = false,
   });
 
   final String valor;
   final String placeholder;
   final VoidCallback onTap;
   final Widget icono;
+  final bool isInvalid;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,10 @@ class FilaIcono extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.fondoCampo,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isInvalid ? Colors.red : Colors.transparent,
+            width: 2,
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
